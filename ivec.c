@@ -3,8 +3,8 @@
 
 struct ivec {
 	int *iv_bufp;
-	int iv_cap;
-	int iv_size; /* number of elements in the vector */
+	size_t iv_cap;
+	size_t iv_size; /* number of elements in the vector */
 };
 
 struct ivec *ivec_init(struct ivec *vp);
@@ -46,6 +46,7 @@ ivec_init(struct ivec *vp)
 int
 ivec_append(struct ivec *vp, int n)
 {
+	/* ensure capacity */
 	if (!(vp->iv_size < vp->iv_cap)) {
 		vp->iv_cap *= 2;
 		vp->iv_bufp = realloc(vp->iv_bufp, vp->iv_cap * *vp->iv_bufp);
