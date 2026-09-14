@@ -12,7 +12,7 @@ struct ivec {
 
 struct ivec *ivec_init(struct ivec *vp);
 int ivec_append(struct ivec *vp, int n);
-int ivec_get(struct ivec *vp, int i, int *n);
+int ivec_get(struct ivec *vp, ssize_t i, int *n);
 int ivec_fini(struct ivec *vp);
 
 int
@@ -39,6 +39,7 @@ main(void)
 
 	/* invalid index */
 	assert(ivec_get(&v, 12345, &n) == -1);
+	assert(ivec_get(&v, -1, &n) == -1);
 
 	ivec_fini(&v);
 
@@ -83,9 +84,9 @@ ivec_append(struct ivec *vp, int n)
 }
 
 int
-ivec_get(struct ivec *vp, int i, int *n)
+ivec_get(struct ivec *vp, ssize_t i, int *n)
 {
-	if (!(i < vp->iv_size))
+	if (i < 0 || i >= vp->iv_size)
 		return -1;
 
 	*n = vp->iv_bufp[i];
