@@ -21,7 +21,10 @@ main(void)
 	struct ivec v;
 	int i, n;
 
-	ivec_init(&v);
+	if (!ivec_init(&v)) {
+		printf("ivec_init failed\n");
+		return 1;
+	}
 
 	for (i = 0; i < 350; ++i)
 		if (ivec_append(&v, i) < 0) {
@@ -42,9 +45,13 @@ main(void)
 struct ivec *
 ivec_init(struct ivec *vp)
 {
+	vp->iv_cap = vp->iv_size = 0;
+
+	vp->iv_bufp = malloc(CAP_INIT * sizeof *vp->iv_bufp);
+	if (!vp->iv_bufp)
+		return NULL;
+
 	vp->iv_cap = CAP_INIT;
-	vp->iv_bufp = malloc(vp->iv_cap * sizeof *vp->iv_bufp);
-	vp->iv_size = 0;
 
 	return vp;
 }
