@@ -7,7 +7,7 @@ struct ivec {
 	int iv_size; /* number of elements in the vector */
 };
 
-int ivec_init(struct ivec *vp);
+struct ivec *ivec_init(struct ivec *vp);
 int ivec_append(struct ivec *vp, int n);
 int ivec_get(struct ivec *vp, int i, int *n);
 int ivec_fini(struct ivec *vp);
@@ -33,14 +33,14 @@ main(void)
 	return 0;
 }
 
-int
+struct ivec *
 ivec_init(struct ivec *vp)
 {
 	vp->iv_cap = 128;
 	vp->iv_bufp = malloc(vp->iv_cap * sizeof *vp->iv_bufp);
 	vp->iv_size = 0;
 
-	return 0;
+	return vp;
 }
 
 int
