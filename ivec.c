@@ -13,7 +13,7 @@ struct ivec {
 struct ivec *ivec_init(struct ivec *vp);
 int ivec_append(struct ivec *vp, int n);
 int ivec_get(struct ivec *vp, ssize_t i, int *n);
-int ivec_fini(struct ivec *vp);
+void ivec_fini(struct ivec *vp);
 
 int
 main(void)
@@ -43,6 +43,8 @@ main(void)
 
 	ivec_fini(&v);
 
+	assert(ivec_append(&v, 7) == -1);
+
 	return 0;
 }
 
@@ -65,6 +67,9 @@ ivec_append(struct ivec *vp, int n)
 {
 	size_t newcap;
 	int *newbufp;
+
+	if (!vp->iv_cap) /* the vector already deallocated */
+		return -1;
 
 	/* ensure capacity */
 	if (!(vp->iv_size < vp->iv_cap)) {
@@ -94,10 +99,10 @@ ivec_get(struct ivec *vp, ssize_t i, int *n)
 	return 0;
 }
 
-int
+void
 ivec_fini(struct ivec *vp)
 {
 	free(vp->iv_bufp);
-
-	return 0;
+	vp->iv_bufp = NULL;
+	vp->iv_cap = vp->iv_size = 0;
 }
