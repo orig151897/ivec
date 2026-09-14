@@ -37,6 +37,9 @@ main(void)
 		assert(n == i);
 	}
 
+	/* invalid index */
+	assert(ivec_get(&v, 12345, &n) == -1);
+
 	ivec_fini(&v);
 
 	return 0;
@@ -82,6 +85,9 @@ ivec_append(struct ivec *vp, int n)
 int
 ivec_get(struct ivec *vp, int i, int *n)
 {
+	if (!(i < vp->iv_size))
+		return -1;
+
 	*n = vp->iv_bufp[i];
 
 	return 0;
