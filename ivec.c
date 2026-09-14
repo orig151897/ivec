@@ -7,10 +7,10 @@ struct ivec {
 	int iv_size; /* number of elements in the vector */
 };
 
-void ivec_init(struct ivec *vp);
-void ivec_append(struct ivec *vp, int n);
-int ivec_get(struct ivec *vp, int i);
-void ivec_fini(struct ivec *vp);
+int ivec_init(struct ivec *vp);
+int ivec_append(struct ivec *vp, int n);
+int ivec_get(struct ivec *vp, int i, int *n);
+int ivec_fini(struct ivec *vp);
 
 int
 main(void)
@@ -24,7 +24,7 @@ main(void)
 		ivec_append(&v, i);
 
 	for (i = 0; i < 10; ++i) {
-		n = ivec_get(&v, i);
+		ivec_get(&v, i, &n);
 		assert(n == i);
 	}
 
@@ -33,15 +33,17 @@ main(void)
 	return 0;
 }
 
-void
+int
 ivec_init(struct ivec *vp)
 {
 	vp->iv_cap = 128;
 	vp->iv_bufp = malloc(vp->iv_cap * sizeof *vp->iv_bufp);
 	vp->iv_size = 0;
+
+	return 0;
 }
 
-void
+int
 ivec_append(struct ivec *vp, int n)
 {
 	if (!(vp->iv_size < vp->iv_cap)) {
@@ -51,16 +53,22 @@ ivec_append(struct ivec *vp, int n)
 
 	vp->iv_bufp[vp->iv_size] = n;
 	++vp->iv_size;
+
+	return 0;
 }
 
 int
-ivec_get(struct ivec *vp, int i)
+ivec_get(struct ivec *vp, int i, int *n)
 {
-	return vp->iv_bufp[i];
+	*n = vp->iv_bufp[i];
+
+	return 0;
 }
 
-void
+int
 ivec_fini(struct ivec *vp)
 {
 	free(vp->iv_bufp);
+
+	return 0;
 }
